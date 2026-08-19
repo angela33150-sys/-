@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>臺灣企業永續 ESG 白皮書 - 動態管考與進度儀表板 (手機版)</title>
+    <title>臺灣企業永續 ESG 白皮書 - 動態管考與進度表</title>
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
             --primary-blue: #1e3a8a;
             --accent-blue: #2563eb;
             --accent-light: #eff6ff;
-            --bg-light: #f1f5f9;
+            --bg-light: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
@@ -47,19 +47,18 @@
             background-color: var(--bg-light);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 40px;
+            padding-bottom: 50px;
         }
 
-        /* 頂部 Sticky Header (針對手機優化) */
         header {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 16px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -69,7 +68,7 @@
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .header-brand i {
@@ -81,7 +80,7 @@
         }
 
         .header-title-text h1 {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--primary);
             line-height: 1.2;
@@ -125,14 +124,13 @@
             border: none;
         }
 
-        /* 主容器 */
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         /* 連動狀態標籤 */
@@ -141,7 +139,7 @@
             align-items: center;
             justify-content: space-between;
             background: var(--card-bg);
-            padding: 10px 14px;
+            padding: 10px 16px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
             font-size: 12px;
@@ -170,7 +168,6 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* KPI 總覽卡片 */
         .kpi-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -180,7 +177,7 @@
         }
 
         .card-header-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -198,7 +195,6 @@
             align-items: center;
         }
 
-        /* 手機版圓形進度環 */
         .gauge-wrapper {
             display: flex;
             flex-direction: column;
@@ -210,7 +206,7 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: conic-gradient(var(--accent-blue) 0% 75%, #e2e8f0 75% 100%);
+            background: conic-gradient(var(--accent-blue) 0% 0%, #e2e8f0 0% 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -230,7 +226,7 @@
         }
 
         .gauge-value {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
@@ -243,7 +239,6 @@
             margin-top: 2px;
         }
 
-        /* 細部分數卡 */
         .sub-stats-column {
             display: flex;
             flex-direction: column;
@@ -253,7 +248,7 @@
         .stat-box {
             background: #f8fafc;
             border-radius: var(--radius-md);
-            padding: 10px 12px;
+            padding: 10px 14px;
             border: 1px solid var(--border-color);
         }
 
@@ -273,7 +268,7 @@
 
         .status-banner {
             margin-top: 16px;
-            padding: 10px 12px;
+            padding: 10px 14px;
             border-radius: var(--radius-md);
             font-size: 13px;
             font-weight: 700;
@@ -282,16 +277,15 @@
             gap: 8px;
         }
 
-        /* 時程區塊 (細部時程展開) */
         .timeline-section-title {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin: 8px 0 4px 4px;
+            margin: 8px 0 0px 4px;
         }
 
         .timeline-section-title h2 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--primary);
         }
@@ -301,46 +295,40 @@
             color: var(--text-muted);
         }
 
-        /* 手機直向時程卡片清單 */
         .month-cards-stack {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
         }
 
+        /* 一頁式平舖月份卡片 */
         .month-card-item {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
-            padding: 16px;
+            padding: 20px;
             border: 1.5px solid var(--border-color);
             box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             position: relative;
-            user-select: none;
-        }
-
-        .month-card-item:active {
-            transform: scale(0.98);
-            border-color: var(--accent-blue);
-            background: var(--accent-light);
         }
 
         .month-card-item.is-current {
             border-color: var(--accent-blue);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.12);
+            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.12);
         }
 
         .month-card-item.is-current::before {
             content: '當前階段';
             position: absolute;
             top: 0;
-            right: 16px;
+            right: 20px;
             background: var(--accent-blue);
             color: #fff;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 0 0 8px 8px;
         }
 
@@ -348,7 +336,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
         }
 
         .month-info {
@@ -358,23 +345,22 @@
         }
 
         .month-name {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
         }
 
         .month-phase {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
         }
 
-        /* 狀態徽章 */
         .status-badge {
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
         }
 
@@ -388,7 +374,6 @@
             background: #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
-            margin: 10px 0;
         }
 
         .progress-bar-fill {
@@ -398,24 +383,93 @@
             transition: width 0.4s ease;
         }
 
-        .month-card-footer {
+        .tracks-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 6px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .tap-action {
-            color: var(--accent-blue);
+        .track-box {
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            padding: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .track-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .track-title {
+            font-size: 13px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
-        /* 手機版 Bottom Sheet / 滑出式彈窗 */
+        .track-title.internal { color: var(--primary-blue); }
+        .track-title.external { color: #c2410c; }
+
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .task-item:active {
+            background: #f1f5f9;
+        }
+
+        .task-item input[type="checkbox"] {
+            margin-top: 2px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-blue);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .month-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 4px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .drive-link {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .drive-link:hover {
+            text-decoration: underline;
+        }
+
         .bottom-sheet-overlay {
             display: none;
             position: fixed;
@@ -435,7 +489,6 @@
             background: var(--card-bg);
             width: 100%;
             max-width: 600px;
-            max-height: 88vh;
             border-radius: 24px 24px 0 0;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
             display: flex;
@@ -494,65 +547,18 @@
 
         .sheet-body {
             padding: 16px 20px;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        .track-box {
-            background: #f8fafc;
-            border-radius: var(--radius-md);
-            padding: 14px;
-            border: 1px solid var(--border-color);
-        }
-
-        .track-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .track-title {
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .track-title.internal { color: var(--primary-blue); }
-        .track-title.external { color: #c2410c; }
-
-        /* 大尺寸適點 Touch Checkbox */
-        .task-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: #ffffff;
+        .config-input {
+            width: 100%;
             padding: 12px;
             border-radius: 10px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             font-size: 14px;
-            line-height: 1.4;
-            cursor: pointer;
-        }
-
-        .task-item input[type="checkbox"] {
-            margin-top: 2px;
-            width: 20px;
-            height: 20px;
-            accent-color: var(--accent-blue);
-            flex-shrink: 0;
-            cursor: pointer;
+            margin-top: 6px;
         }
 
         .sheet-footer {
@@ -584,48 +590,27 @@
             color: #ffffff;
         }
 
-        .btn-primary:active {
-            background: #1e40af;
-        }
-
         .btn-outline {
             background: #ffffff;
             color: var(--accent-blue);
             border: 1px solid var(--border-color);
-            text-decoration: none;
         }
 
-        /* 試算表設定 Modal */
-        .config-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            font-size: 14px;
-            margin-top: 6px;
-        }
-
-        /* 針對較大手機或平板之輔助 RWD Layout */
         @media (min-width: 600px) {
-            .kpi-main-grid {
-                grid-template-columns: 150px 1fr;
-            }
-            .sub-stats-column {
-                flex-direction: row;
-            }
+            .kpi-main-grid { grid-template-columns: 150px 1fr; }
+            .sub-stats-column { flex-direction: row; }
             .stat-box { flex: 1; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 頂部 Sticky Header -->
     <header>
         <div class="header-brand">
             <i class="fa-solid fa-leaf"></i>
             <div class="header-title-text">
                 <h1>ESG 白皮書 動態管考</h1>
-                <p>115.08 - 116.01 進度追蹤</p>
+                <p>115.08 - 116.01 一頁式實時看板</p>
             </div>
         </div>
         <div class="header-actions">
@@ -638,7 +623,6 @@
         </div>
     </header>
 
-    <!-- 主容器 -->
     <div class="container">
 
         <!-- 連動狀態 -->
@@ -646,7 +630,7 @@
             <span class="sync-tag" id="syncStatusTag">
                 <span class="pulse-dot"></span> <span id="syncText">已連動預設範例資料</span>
             </span>
-            <span style="color: var(--text-muted);" id="lastSyncTime">115.11 當前階段</span>
+            <span style="color: var(--text-muted);" id="lastSyncTime">115.08 當前階段</span>
         </div>
 
         <!-- 專案總體進度 KPI 卡片 -->
@@ -661,7 +645,7 @@
                 <div class="gauge-wrapper">
                     <div class="gauge-circle" id="overallGauge">
                         <div class="gauge-inner">
-                            <span class="gauge-value" id="overallPct">75%</span>
+                            <span class="gauge-value" id="overallPct">25%</span>
                             <span class="gauge-label">完成率</span>
                         </div>
                     </div>
@@ -671,81 +655,32 @@
                 <div class="sub-stats-column">
                     <div class="stat-box">
                         <div class="stat-label">🔵 內部團隊進度</div>
-                        <div class="stat-val" id="internalAvgPct">85%</div>
+                        <div class="stat-val" id="internalAvgPct">50%</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">🟠 外部專家邀稿</div>
-                        <div class="stat-val" id="externalAvgPct">65%</div>
+                        <div class="stat-val" id="externalAvgPct">0%</div>
                     </div>
                 </div>
             </div>
 
             <!-- 專案狀態 Banner -->
-            <div class="status-banner" id="statusBanner" style="background: var(--green-bg); color: var(--green-text);">
-                <i class="fa-solid fa-circle-check"></i> 🟢 專案按計畫正常推進
+            <div class="status-banner" id="statusBanner" style="background: var(--yellow-bg); color: var(--yellow-text);">
+                <i class="fa-solid fa-clock"></i> 🟡 115.08 啟動期按計畫推進中
             </div>
         </div>
 
-        <!-- 細部時程展開 (月份卡片堆疊) -->
         <div class="timeline-section-title">
-            <h2>細部時程展開</h2>
-            <span>點擊月份檢核雙軌任務</span>
+            <h2>細部時程與任務平舖檢核</h2>
+            <span>一頁式直觀勾選</span>
         </div>
 
         <div class="month-cards-stack" id="monthsContainer">
-            <!-- 由 JavaScript 動態渲染 6 個月份卡片 -->
+            <!-- 由 JavaScript 自動平舖渲染 6 個月份卡片與其內建任務 -->
         </div>
 
     </div>
 
-    <!-- 手機版 Bottom Sheet: 雙軌矩陣詳情 -->
-    <div class="bottom-sheet-overlay" id="detailModal" onclick="closeModal(event)">
-        <div class="bottom-sheet" onclick="event.stopPropagation()">
-            <div class="sheet-handle"></div>
-            <div class="sheet-header">
-                <div class="sheet-title">
-                    <h3 id="mTitle">115.11 收件期</h3>
-                    <p id="mSubtitle">階段完成率：75%</p>
-                </div>
-                <button class="sheet-close-btn" onclick="closeModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="sheet-body">
-                <!-- 內部團隊軌道 -->
-                <div class="track-box">
-                    <div class="track-header">
-                        <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部研究團隊任務</span>
-                        <span class="status-badge badge-green" id="mInternalBadge">80%</span>
-                    </div>
-                    <ul class="task-list" id="mInternalTasks">
-                        <!-- 任務列表 dynamically -->
-                    </ul>
-                </div>
-
-                <!-- 外部專家軌道 -->
-                <div class="track-box">
-                    <div class="track-header">
-                        <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家邀稿任務</span>
-                        <span class="status-badge badge-yellow" id="mExternalBadge">50%</span>
-                    </div>
-                    <ul class="task-list" id="mExternalTasks">
-                        <!-- 任務列表 dynamically -->
-                    </ul>
-                </div>
-            </div>
-
-            <div class="sheet-footer">
-                <a href="https://drive.google.com" target="_blank" class="btn-full btn-outline">
-                    <i class="fa-brands fa-google-drive"></i> 開啓雲端資料夾 / 初稿預覽
-                </a>
-                <button class="btn-full btn-primary" onclick="closeModal()">確認完成</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 試算表設定 Modal -->
     <div class="bottom-sheet-overlay" id="configModal" onclick="closeConfigModal(event)">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -766,8 +701,8 @@
                     <strong>💡 設定步驟：</strong><br>
                     1. 開啟您的 Google 試算表。<br>
                     2. 點選選單「檔案」➔「分享」➔「發布到網路」。<br>
-                    3. 選擇「工作表1」並切換格式為「CSV」。<br>
-                    4. 複製產生的網址並貼於上方欄位中儲存。
+                    3. 選擇「工作表1」並切換格式為「Comma-separated values (.csv)」。<br>
+                    4. 複製產生的網址並貼於上方欄位中，點擊「儲存並連動」。
                 </div>
             </div>
             <div class="sheet-footer">
@@ -778,69 +713,69 @@
     </div>
 
     <script>
-        // 預設完整 ESG 白皮書專案資料 (115.08 - 116.01)
+        // 預設完整 ESG 白皮書專案資料 (115.08 當前階段)
         const defaultData = [
             {
                 id: 'm1',
                 month: '115.08',
                 phase: '啟動期',
-                overallPct: 100,
-                status: 'green',
-                statusText: '已結案 100%',
+                overallPct: 25,
+                status: 'yellow',
+                statusText: '進行中 25%',
+                isCurrent: true,
                 internalTasks: [
                     { text: '架構確立與指標對齊', done: true },
-                    { text: '建立產業對照表與 E/S/G 基準', done: true }
+                    { text: '建立產業對照表與 E/S/G 基準', done: false }
                 ],
                 externalTasks: [
-                    { text: '發出邀稿與撰稿指引', done: true },
-                    { text: '確認經費與行政契約簽訂', done: true }
+                    { text: '發出邀稿與撰稿指引', done: false },
+                    { text: '確認經費與行政契約簽訂', done: false }
                 ]
             },
             {
                 id: 'm2',
                 month: '115.09',
                 phase: '建置期',
-                overallPct: 100,
-                status: 'green',
-                statusText: '已結案 100%',
+                overallPct: 0,
+                status: 'gray',
+                statusText: '未啟動 0%',
                 internalTasks: [
-                    { text: '串接證交所 ESG 儀表板數據', done: true },
-                    { text: '整理 33 類產業別指標與落實度追蹤', done: true }
+                    { text: '串接證交所 ESG 儀表板數據', done: false },
+                    { text: '整理 33 類產業別指標與落實度追蹤', done: false }
                 ],
                 externalTasks: [
-                    { text: '外部專家大綱確認進度', done: true },
-                    { text: '確認標竿企業名單', done: true }
+                    { text: '外部專家大綱確認進度', done: false },
+                    { text: '確認標竿企業名單', done: false }
                 ]
             },
             {
                 id: 'm3',
                 month: '115.10',
                 phase: '研析期',
-                overallPct: 100,
-                status: 'green',
-                statusText: '已結案 100%',
+                overallPct: 0,
+                status: 'gray',
+                statusText: '未啟動 0%',
                 internalTasks: [
-                    { text: '產業別落差分析', done: true },
-                    { text: '撰寫第二、三章初稿', done: true }
+                    { text: '產業別落差分析', done: false },
+                    { text: '撰寫第二、三章初稿', done: false }
                 ],
                 externalTasks: [
-                    { text: '進行外部撰稿中期進度確認與催告', done: true }
+                    { text: '進行外部撰稿中期進度確認與催告', done: false }
                 ]
             },
             {
                 id: 'm4',
                 month: '115.11',
                 phase: '收件期',
-                overallPct: 75,
-                status: 'yellow',
-                statusText: '進行中 75%',
-                isCurrent: true,
+                overallPct: 0,
+                status: 'gray',
+                statusText: '未啟動 0%',
                 internalTasks: [
-                    { text: '整併第一章~第四章內容', done: true },
+                    { text: '整併第一章~第四章內容', done: false },
                     { text: '規劃第五章架構與章節細節', done: false }
                 ],
                 externalTasks: [
-                    { text: '收件前時程提醒與格式核對發出', done: true },
+                    { text: '收件前時程提醒與格式核對發出', done: false },
                     { text: '11.30 前正式收回外部 2 篇委撰初稿', done: false }
                 ]
             },
@@ -878,7 +813,6 @@
         ];
 
         let currentData = JSON.parse(JSON.stringify(defaultData));
-        let selectedMonthIndex = 3;
 
         function init() {
             const savedUrl = localStorage.getItem('esg_sheet_csv_url');
@@ -915,20 +849,37 @@
             document.getElementById('internalAvgPct').innerText = intPct + '%';
             document.getElementById('externalAvgPct').innerText = extPct + '%';
 
-            // 渲染月份卡片堆疊
+            // 一頁式平舖渲染月份卡片
             const container = document.getElementById('monthsContainer');
             container.innerHTML = '';
 
-            data.forEach((item, index) => {
+            data.forEach((item, monthIdx) => {
                 const card = document.createElement('div');
                 card.className = `month-card-item ${item.isCurrent ? 'is-current' : ''}`;
-                card.onclick = () => openModal(index);
 
                 const badgeClass = item.status === 'green' ? 'badge-green' : (item.status === 'yellow' ? 'badge-yellow' : 'badge-gray');
 
-                // 計算完成任務比例簡報
                 const intTaskDone = item.internalTasks.filter(t => t.done).length;
                 const extTaskDone = item.externalTasks.filter(t => t.done).length;
+
+                const intPctMonth = Math.round((intTaskDone / (item.internalTasks.length || 1)) * 100);
+                const extPctMonth = Math.round((extTaskDone / (item.externalTasks.length || 1)) * 100);
+
+                // 內部任務 HTML
+                const internalTasksHTML = item.internalTasks.map((t, taskIdx) => `
+                    <li class="task-item" onclick="toggleTask(${monthIdx}, 'internal', ${taskIdx})">
+                        <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${monthIdx}, 'internal', ${taskIdx})">
+                        <span>${t.text}</span>
+                    </li>
+                `).join('');
+
+                // 外部任務 HTML
+                const externalTasksHTML = item.externalTasks.map((t, taskIdx) => `
+                    <li class="task-item" onclick="toggleTask(${monthIdx}, 'external', ${taskIdx})">
+                        <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${monthIdx}, 'external', ${taskIdx})">
+                        <span>${t.text}</span>
+                    </li>
+                `).join('');
 
                 card.innerHTML = `
                     <div class="month-card-top">
@@ -943,65 +894,48 @@
                         <div class="progress-bar-fill" style="width: ${item.overallPct}%;"></div>
                     </div>
 
+                    <!-- 內嵌雙軌任務（直接平舖在主頁） -->
+                    <div class="tracks-container">
+                        <div class="track-box">
+                            <div class="track-header">
+                                <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部研究團隊任務</span>
+                                <span class="status-badge badge-green" style="font-size: 11px;">${intPctMonth}%</span>
+                            </div>
+                            <ul class="task-list">
+                                ${internalTasksHTML}
+                            </ul>
+                        </div>
+
+                        <div class="track-box">
+                            <div class="track-header">
+                                <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家邀稿任務</span>
+                                <span class="status-badge badge-yellow" style="font-size: 11px;">${extPctMonth}%</span>
+                            </div>
+                            <ul class="task-list">
+                                ${externalTasksHTML}
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="month-card-footer">
-                        <span>內部 ${intTaskDone}/${item.internalTasks.length} ｜ 外部 ${extTaskDone}/${item.externalTasks.length}</span>
-                        <span class="tap-action">展開雙軌管考 <i class="fa-solid fa-chevron-right" style="font-size: 11px;"></i></span>
+                        <span style="font-size: 12px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${item.internalTasks.length} ｜ 外部 ${extTaskDone}/${item.externalTasks.length}</span>
+                        <a href="https://drive.google.com" target="_blank" class="drive-link">
+                            <i class="fa-brands fa-google-drive"></i> 開啟雲端資料夾
+                        </a>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function openModal(index) {
-            selectedMonthIndex = index;
-            const item = currentData[index];
-
-            document.getElementById('mTitle').innerText = `${item.month} ${item.phase}`;
-            document.getElementById('mSubtitle').innerText = `階段整體完成率：${item.overallPct}%`;
-
-            // 內部任務
-            const internalList = document.getElementById('mInternalTasks');
-            internalList.innerHTML = item.internalTasks.map((t, idx) => `
-                <li class="task-item" onclick="toggleTask('internal', ${idx})">
-                    <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask('internal', ${idx})">
-                    <span>${t.text}</span>
-                </li>
-            `).join('');
-
-            // 外部任務
-            const externalList = document.getElementById('mExternalTasks');
-            externalList.innerHTML = item.externalTasks.map((t, idx) => `
-                <li class="task-item" onclick="toggleTask('external', ${idx})">
-                    <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask('external', ${idx})">
-                    <span>${t.text}</span>
-                </li>
-            `).join('');
-
-            // 計算並更新彈窗內的 Badge
-            updateModalBadges(item);
-
-            document.getElementById('detailModal').classList.add('open');
-        }
-
-        function updateModalBadges(item) {
-            const intDone = item.internalTasks.filter(t => t.done).length;
-            const intPct = Math.round((intDone / item.internalTasks.length) * 100) || 0;
-            document.getElementById('mInternalBadge').innerText = `${intPct}%`;
-
-            const extDone = item.externalTasks.filter(t => t.done).length;
-            const extPct = Math.round((extDone / item.externalTasks.length) * 100) || 0;
-            document.getElementById('mExternalBadge').innerText = `${extPct}%`;
-        }
-
-        function toggleTask(type, taskIdx) {
-            const item = currentData[selectedMonthIndex];
+        function toggleTask(monthIdx, type, taskIdx) {
+            const item = currentData[monthIdx];
             if (type === 'internal') {
                 item.internalTasks[taskIdx].done = !item.internalTasks[taskIdx].done;
             } else {
                 item.externalTasks[taskIdx].done = !item.externalTasks[taskIdx].done;
             }
 
-            // 動態重算當月 %
             const allTasks = [...item.internalTasks, ...item.externalTasks];
             const doneCount = allTasks.filter(t => t.done).length;
             item.overallPct = Math.round((doneCount / allTasks.length) * 100);
@@ -1018,11 +952,6 @@
             }
 
             renderDashboard(currentData);
-            openModal(selectedMonthIndex); // 刷新彈窗顯示
-        }
-
-        function closeModal(e) {
-            document.getElementById('detailModal').classList.remove('open');
         }
 
         function openConfigModal() {
@@ -1065,16 +994,86 @@
             fetch(url)
                 .then(response => response.text())
                 .then(csvText => {
-                    console.log("CSV 讀取成功");
+                    parseCSVToData(csvText);
+                    document.getElementById('syncText').innerText = 'Google 試算表即時連動中';
+                    document.getElementById('lastSyncTime').innerText = `最後同步：${new Date().toLocaleTimeString('zh-TW', {hour: '2-digit', minute:'2-digit'})}`;
                     renderDashboard(currentData);
                 })
                 .catch(err => {
-                    console.warn("網絡或跨域限制，套用本地預設資料:", err);
+                    console.warn("連動失敗，套用本地範例資料:", err);
                     renderDashboard(currentData);
                 });
         }
 
-        // 初始化
+        function parseCSVToData(csvText) {
+            const lines = csvText.split(/\r\n|\n/);
+            if (lines.length < 2) return;
+
+            const monthMap = {};
+            currentData.forEach(m => {
+                monthMap[m.month] = {
+                    ...m,
+                    internalTasks: [],
+                    externalTasks: []
+                };
+            });
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                if (cols.length < 3) continue;
+
+                const monthKey = cols[0];
+                const intTask = cols[1];
+                const intDone = cols[2];
+                const extTask = cols[3];
+                const extDone = cols[4];
+
+                const targetMonth = Object.keys(monthMap).find(k => monthKey.includes(k));
+                if (targetMonth) {
+                    if (intTask) {
+                        monthMap[targetMonth].internalTasks.push({
+                            text: intTask,
+                            done: intDone === '是' || intDone === 'true' || intDone === 'TRUE' || intDone === '1'
+                        });
+                    }
+                    if (extTask) {
+                        monthMap[targetMonth].externalTasks.push({
+                            text: extTask,
+                            done: extDone === '是' || extDone === 'true' || extDone === 'TRUE' || extDone === '1'
+                        });
+                    }
+                }
+            }
+
+            currentData = Object.values(monthMap).map(item => {
+                const allTasks = [...item.internalTasks, ...item.externalTasks];
+                if (allTasks.length === 0) return item;
+
+                const doneCount = allTasks.filter(t => t.done).length;
+                const pct = Math.round((doneCount / allTasks.length) * 100);
+                
+                let status = 'gray';
+                let statusText = '未啟動 0%';
+                if (pct === 100) {
+                    status = 'green';
+                    statusText = '已結案 100%';
+                } else if (pct > 0) {
+                    status = 'yellow';
+                    statusText = `進行中 ${pct}%`;
+                }
+
+                return {
+                    ...item,
+                    overallPct: pct,
+                    status: status,
+                    statusText: statusText
+                };
+            });
+        }
+
         init();
     </script>
 </body>
