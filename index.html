@@ -133,40 +133,6 @@
             gap: 20px;
         }
 
-        .status-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card-bg);
-            padding: 10px 16px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            font-size: 12px;
-        }
-
-        .sync-tag {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            color: var(--green-text);
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-            animation: pulse 1.6s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
         .kpi-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -287,11 +253,6 @@
             font-size: 17px;
             font-weight: 700;
             color: var(--primary);
-        }
-
-        .timeline-section-title span {
-            font-size: 12px;
-            color: var(--text-muted);
         }
 
         .month-cards-stack {
@@ -824,7 +785,6 @@
             const savedUrl = localStorage.getItem('esg_sheet_csv_url');
             if (savedUrl) {
                 document.getElementById('sheetUrlInput').value = savedUrl;
-                document.getElementById('syncStatusTag').innerHTML = `<span class="pulse-dot"></span> 試算表連動中`;
                 fetchGoogleSheetData(savedUrl);
             } else {
                 renderDashboard(currentData);
@@ -832,12 +792,13 @@
         }
 
         function renderDashboard(data) {
-            // 更新當前階段顯示於狀態列
+            // 更新當前階段顯示於狀態欄 Banner
             const currentItem = data.find(m => m.isCurrent) || data[0];
             if (currentItem) {
-                const lastSyncElem = document.getElementById('lastSyncTime');
-                if (lastSyncElem) lastSyncElem.innerText = `當前階段：${currentItem.month} ${currentItem.phase}`;
-                document.getElementById('statusBanner').innerHTML = `<i class="fa-solid fa-flag"></i> 📍 目前推進目標：${currentItem.month} ${currentItem.phase}`;
+                const statusBanner = document.getElementById('statusBanner');
+                if (statusBanner) {
+                    statusBanner.innerHTML = `<i class="fa-solid fa-flag"></i> 📍 目前推進目標：${currentItem.month} ${currentItem.phase}`;
+                }
             }
 
             // 計算總完成率
@@ -943,7 +904,6 @@
             });
         }
 
-        // 切換當前階段
         function setCurrentPhase(targetIdx) {
             currentData.forEach((item, idx) => {
                 item.isCurrent = (idx === targetIdx);
@@ -992,8 +952,6 @@
                     alert('⚠️ 您貼上的網址好像不是 CSV 發布網址喔！\n請至 Google 試算表選擇「檔案 ➔ 分享 ➔ 發布到網路」，並將格式選擇為 CSV 複製產生的網址。');
                 }
                 localStorage.setItem('esg_sheet_csv_url', url);
-                const syncTag = document.getElementById('syncStatusTag');
-                if (syncTag) syncTag.innerHTML = `<span class="pulse-dot"></span> 試算表連動中`;
                 fetchGoogleSheetData(url);
             }
             closeConfigModal();
@@ -1002,8 +960,6 @@
         function clearSheetUrl() {
             localStorage.removeItem('esg_sheet_csv_url');
             document.getElementById('sheetUrlInput').value = '';
-            const syncTag = document.getElementById('syncStatusTag');
-            if (syncTag) syncTag.innerHTML = `<span class="pulse-dot"></span> 已連動預設範例資料`;
             currentData = JSON.parse(JSON.stringify(defaultData));
             renderDashboard(currentData);
             closeConfigModal();
@@ -1019,7 +975,7 @@
         }
 
         function fetchGoogleSheetData(url) {
-            // 加入時間戳記 (Cache Buster)，強制瀏覽器向 Google 抓取最新 CSV 資料，避免讀取暫存
+            // 加入時間戳記 (Cache Buster)
             const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
 
             fetch(cacheBusterUrl)
@@ -1029,16 +985,10 @@
                 })
                 .then(csvText => {
                     parseCSVToData(csvText);
-                    const syncText = document.getElementById('syncText');
-                    if (syncText) syncText.innerText = 'Google 試算表即時連動中';
-                    const lastSyncTime = document.getElementById('lastSyncTime');
-                    if (lastSyncTime) lastSyncTime.innerText = `最後同步：${new Date().toLocaleTimeString('zh-TW', {hour: '2-digit', minute:'2-digit'})}`;
                     renderDashboard(currentData);
                 })
                 .catch(err => {
                     console.warn("連動失敗，套用本地預設資料:", err);
-                    const syncText = document.getElementById('syncText');
-                    if (syncText) syncText.innerText = '網址連動異常';
                     renderDashboard(currentData);
                 });
         }
