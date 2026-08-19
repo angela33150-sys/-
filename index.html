@@ -133,7 +133,6 @@
             gap: 20px;
         }
 
-        /* 連動狀態標籤 */
         .status-bar {
             display: flex;
             align-items: center;
@@ -301,7 +300,6 @@
             gap: 20px;
         }
 
-        /* 一頁式平舖月份卡片 */
         .month-card-item {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -368,7 +366,6 @@
         .badge-yellow { background: var(--yellow-bg); color: var(--yellow-text); }
         .badge-gray { background: #f1f5f9; color: #64748b; }
 
-        /* 手動切換當前階段按鈕 */
         .phase-set-btn {
             font-size: 11px;
             font-weight: 700;
@@ -481,20 +478,6 @@
             justify-content: space-between;
             padding-top: 4px;
             border-top: 1px dashed var(--border-color);
-        }
-
-        .drive-link {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .drive-link:hover {
-            text-decoration: underline;
         }
 
         .bottom-sheet-overlay {
@@ -660,7 +643,7 @@
             <span style="color: var(--text-muted);" id="lastSyncTime">115.08 當前階段</span>
         </div>
 
-        <!-- 專案總體進度 KPI 卡片 (保留原樣不修改) -->
+        <!-- 專案總體進度 KPI 卡片 -->
         <div class="kpi-card">
             <div class="card-header-title">
                 <span>專案總體進度</span>
@@ -672,7 +655,7 @@
                 <div class="gauge-wrapper">
                     <div class="gauge-circle" id="overallGauge">
                         <div class="gauge-inner">
-                            <span class="gauge-value" id="overallPct">25%</span>
+                            <span class="gauge-value" id="overallPct">0%</span>
                             <span class="gauge-label">完成率</span>
                         </div>
                     </div>
@@ -682,7 +665,7 @@
                 <div class="sub-stats-column">
                     <div class="stat-box">
                         <div class="stat-label">🔵 內部團隊進度 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第二章、第三章、第五章)</span></div>
-                        <div class="stat-val" id="internalAvgPct">50%</div>
+                        <div class="stat-val" id="internalAvgPct">0%</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">🟠 外部專家邀稿 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第一章、第四章)</span></div>
@@ -724,10 +707,10 @@
                 <input type="url" id="sheetUrlInput" class="config-input" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv">
 
                 <div style="background: #f8fafc; padding: 12px; border-radius: 10px; font-size: 12px; color: var(--text-muted); line-height: 1.5; border: 1px solid var(--border-color);">
-                    <strong>💡 設定步驟：</strong><br>
+                    <strong>💡 正確連動步驟：</strong><br>
                     1. 開啟您的 Google 試算表。<br>
                     2. 點選選單「檔案」➔「分享」➔「發布到網路」。<br>
-                    3. 選擇「工作表1」並切換格式為「Comma-separated values (.csv)」。<br>
+                    3. 選擇「工作表1」並切換格式為 **「Comma-separated values (.csv)」**。<br>
                     4. 複製產生的網址並貼於上方欄位中，點擊「儲存並連動」。
                 </div>
             </div>
@@ -739,7 +722,7 @@
     </div>
 
     <script>
-        // 預設完整 ESG 白皮書專案資料 (已重置為 0% 初始未啟動狀態)
+        // 預設完整 ESG 白皮書專案資料
         const defaultData = [
             {
                 id: 'm1',
@@ -881,8 +864,8 @@
                 m.externalTasks.forEach(t => { externalTotal++; if(t.done) externalDone++; });
             });
 
-            let intPct = Math.round((internalDone / internalTotal) * 100) || 0;
-            let extPct = Math.round((externalDone / externalTotal) * 100) || 0;
+            let intPct = Math.round((internalDone / (internalTotal || 1)) * 100) || 0;
+            let extPct = Math.round((externalDone / (externalTotal || 1)) * 100) || 0;
 
             document.getElementById('internalAvgPct').innerText = intPct + '%';
             document.getElementById('externalAvgPct').innerText = extPct + '%';
@@ -937,7 +920,6 @@
                         <div class="progress-bar-fill" style="width: ${item.overallPct}%;"></div>
                     </div>
 
-                    <!-- 內嵌雙軌任務（直接平舖在主頁） -->
                     <div class="tracks-container">
                         <div class="track-box">
                             <div class="track-header">
@@ -1013,6 +995,9 @@
         function saveSheetUrl() {
             const url = document.getElementById('sheetUrlInput').value.trim();
             if (url) {
+                if (url.includes('/edit') && !url.includes('output=csv')) {
+                    alert('⚠️ 您貼上的網址好像不是 CSV 發布網址喔！\n請至 Google 試算表選擇「檔案 ➔ 分享 ➔ 發布到網路」，並將格式選擇為 CSV 複製產生的網址。');
+                }
                 localStorage.setItem('esg_sheet_csv_url', url);
                 document.getElementById('syncStatusTag').innerHTML = `<span class="pulse-dot"></span> 試算表連動中`;
                 fetchGoogleSheetData(url);
@@ -1039,8 +1024,14 @@
         }
 
         function fetchGoogleSheetData(url) {
-            fetch(url)
-                .then(response => response.text())
+            // 加入時間戳記 (Cache Buster)，強制瀏覽器向 Google 抓取最新 CSV 資料，避免讀取暫存
+            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+
+            fetch(cacheBusterUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('網路或網址連結無效');
+                    return response.text();
+                })
                 .then(csvText => {
                     parseCSVToData(csvText);
                     document.getElementById('syncText').innerText = 'Google 試算表即時連動中';
@@ -1048,7 +1039,8 @@
                     renderDashboard(currentData);
                 })
                 .catch(err => {
-                    console.warn("連動失敗，套用本地範例資料:", err);
+                    console.warn("連動失敗，套用本地預設資料:", err);
+                    document.getElementById('syncText').innerText = '網址連動異常';
                     renderDashboard(currentData);
                 });
         }
