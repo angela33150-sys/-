@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 加入手機瀏覽器防快取標籤 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>臺灣企業永續 ESG 白皮書 - 動態管考與進度儀表板 (一頁式整合版)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1010,14 +1014,24 @@
         }
 
         function fetchGoogleSheetData(url) {
-            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            // 加入雙重隨機破壞快取參數 (網址時間戳記 + 隨機數)
+            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now() + '&_r=' + Math.random();
 
-            fetch(cacheBusterUrl)
+            // 強制設定 no-store，禁止手機 Safari / Chrome 快取舊資料
+            fetch(cacheBusterUrl, {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
+            })
                 .then(response => {
                     if (!response.ok) throw new Error('網路或網址連結無效');
                     return response.text();
                 })
                 .then(csvText => {
+                    // 雲端成功讀取後，自動清除手機本機的舊紀錄，確保100%以雲端為主
+                    localStorage.removeItem('esg_dashboard_progress_data');
                     parseCSVToData(csvText);
                     renderDashboard(currentData);
                 })
