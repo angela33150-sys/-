@@ -1085,8 +1085,10 @@
 
         function parseCSVToData(csvText) {
             if (!csvText || typeof csvText !== 'string') return;
-            const lines = csvText.split(/\r\n|\n/);
-            if (lines.length < 2) return;
+            
+            // 使用強健的 CSV 解析器，支援文字欄位包含逗號或換行
+            const rows = parseCSVRows(csvText);
+            if (rows.length < 2) return;
 
             const monthMap = {};
             const baseData = JSON.parse(JSON.stringify(defaultData));
@@ -1099,40 +1101,47 @@
                 };
             });
 
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line) continue;
-                
-                const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                if (cols.length < 2) continue;
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i];
+                if (!cols || cols.length < 2) continue;
 
-                const monthKey = cols[0];
-                const intTask = cols[1];
-                const intDone = cols[2];
-                const extTask = cols[3];
-                const extDone = cols[4];
+                // 讀取各欄資料並自動清理 (容許 115.10. 等帶有句點或空白的月份格式)
+                const rawMonthKey = (cols[0] || '').trim().replace(/\.$/, '');
+                const intTask = (cols[1] || '').trim();  // B欄：內部團隊任務名稱
+                const intDone = (cols[2] || '').trim();  // C欄：內部完成狀態
+                const extTask = (cols[3] || '').trim();  // D欄：外部專家任務名稱
+                const extDone = (cols[4] || '').trim();  // E欄：外部完成狀態
 
-                if (!monthKey) continue;
+                if (!rawMonthKey) continue;
 
-                const targetMonth = Object.keys(monthMap).find(k => monthKey.includes(k) || k.includes(monthKey));
+                // 彈性對照月份標籤
+                const targetMonth = Object.keys(monthMap).find(k => {
+                    const cleanK = k.replace(/\.$/, '').trim();
+                    return rawMonthKey.includes(cleanK) || cleanK.includes(rawMonthKey);
+                });
+
                 if (targetMonth) {
-                    if (intTask && intTask.trim() !== '') {
+                    // 同步 B 欄的最新任務文字與 C 欄勾選狀態
+                    if (intTask !== '') {
                         monthMap[targetMonth]._parsedInternal.push({
                             text: intTask,
-                            done: intDone === '是' || intDone === 'true' || intDone === 'TRUE' || intDone === '1'
+                            done: isCompletedStatus(intDone)
                         });
                     }
-                    if (extTask && extTask.trim() !== '') {
+                    // 同步 D 欄的最新任務文字與 E 欄勾選狀態
+                    if (extTask !== '') {
                         monthMap[targetMonth]._parsedExternal.push({
                             text: extTask,
-                            done: extDone === '是' || extDone === 'true' || extDone === 'TRUE' || extDone === '1'
+                            done: isCompletedStatus(extDone)
                         });
                     }
                 }
             }
 
             currentData = Object.values(monthMap).map(item => {
+                // 若 Google 試算表中有編輯 B 欄，即以 B 欄最新文字即時替換
                 const internalTasks = item._parsedInternal.length > 0 ? item._parsedInternal : item.internalTasks;
+                // 若 Google 試算表中有編輯 D 欄，即以 D 欄最新文字即時替換
                 const externalTasks = item._parsedExternal.length > 0 ? item._parsedExternal : item.externalTasks;
 
                 delete item._parsedInternal;
@@ -1162,6 +1171,60 @@
                     statusText: statusText
                 };
             });
+        }
+
+        function isCompletedStatus(val) {
+            if (!val) return false;
+            const str = String(val).trim().toUpperCase();
+            return str === '是' || str === 'TRUE' || str === '1' || str === 'YES' || str === 'V';
+        }
+
+        function parseCSVRows(text) {
+            const result = [];
+            let row = [];
+            let field = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                const nextC = text[i + 1];
+
+                if (inQuotes) {
+                    if (c === '"' && nextC === '"') {
+                        field += '"';
+                        i++;
+                    } else if (c === '"') {
+                        inQuotes = false;
+                    } else {
+                        field += c;
+                    }
+                } else {
+                    if (c === '"') {
+                        inQuotes = true;
+                    } else if (c === ',') {
+                        row.push(field);
+                        field = '';
+                    } else if (c === '\r') {
+                        if (nextC === '\n') i++;
+                        row.push(field);
+                        result.push(row);
+                        row = [];
+                        field = '';
+                    } else if (c === '\n') {
+                        row.push(field);
+                        result.push(row);
+                        row = [];
+                        field = '';
+                    } else {
+                        field += c;
+                    }
+                }
+            }
+            if (field || row.length > 0) {
+                row.push(field);
+                result.push(row);
+            }
+            return result;
         }
 
         window.addEventListener('DOMContentLoaded', function() {
