@@ -111,6 +111,7 @@
             font-size: 15px;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
 
         .icon-btn:active {
@@ -122,6 +123,18 @@
             background: var(--primary-blue);
             color: #fff;
             border: none;
+        }
+
+        .icon-btn.active-sync::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--green);
+            border-radius: 50%;
+            border: 2px solid #ffffff;
         }
 
         .container {
@@ -585,10 +598,10 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="openConfigModal()" title="Google 試算表設定">
+            <button class="icon-btn" id="configBtn" onclick="openConfigModal()" title="Google 試算表連動設定">
                 <i class="fa-solid fa-gear"></i>
             </button>
-            <button class="icon-btn primary" onclick="refreshData()" title="重新整理">
+            <button class="icon-btn primary" onclick="refreshData()" title="重新整理資料">
                 <i class="fa-solid fa-rotate"></i>
             </button>
         </div>
@@ -629,7 +642,7 @@
 
             <!-- 專案狀態 Banner -->
             <div class="status-banner" id="statusBanner" style="background: var(--yellow-bg); color: var(--yellow-text);">
-                <i class="fa-solid fa-clock"></i> 🟡 115.08 啟動期按計畫推進中
+                <i class="fa-solid fa-flag"></i> 📍 目前推進目標：115.08 啟動期
             </div>
         </div>
 
@@ -663,13 +676,13 @@
                     <strong>💡 正確連動步驟：</strong><br>
                     1. 開啟您的 Google 試算表。<br>
                     2. 點選選單「檔案」➔「分享」➔「發布到網路」。<br>
-                    3. 選擇「工作表1」並切換格式為 **「Comma-separated values (.csv)」**。<br>
+                    3. 選擇「工作表1」並將格式改為 **「Comma-separated values (.csv)」**。<br>
                     4. 複製產生的網址並貼於上方欄位中，點擊「儲存並連動」。
                 </div>
             </div>
             <div class="sheet-footer">
                 <button class="btn-full btn-primary" onclick="saveSheetUrl()">儲存並連動</button>
-                <button class="btn-full btn-outline" style="color:#ef4444;" onclick="clearSheetUrl()">重設為範例資料</button>
+                <button class="btn-full btn-outline" style="color:#ef4444;" onclick="clearSheetUrl()">重設為預設範例資料</button>
             </div>
         </div>
     </div>
@@ -785,14 +798,19 @@
             const savedUrl = localStorage.getItem('esg_sheet_csv_url');
             if (savedUrl) {
                 document.getElementById('sheetUrlInput').value = savedUrl;
+                document.getElementById('configBtn').classList.add('active-sync');
                 fetchGoogleSheetData(savedUrl);
             } else {
+                const localProgress = localStorage.getItem('esg_dashboard_progress_data');
+                if (localProgress) {
+                    try { currentData = JSON.parse(localProgress); } catch(e) {}
+                }
                 renderDashboard(currentData);
             }
         }
 
         function renderDashboard(data) {
-            // 更新當前階段顯示於狀態欄 Banner
+            // 當前重點推進目標 Banner
             const currentItem = data.find(m => m.isCurrent) || data[0];
             if (currentItem) {
                 const statusBanner = document.getElementById('statusBanner');
@@ -801,15 +819,15 @@
                 }
             }
 
-            // 計算總完成率
+            // 總完成率計算
             let totalPct = Math.round(data.reduce((acc, curr) => acc + curr.overallPct, 0) / data.length);
             document.getElementById('overallPct').innerText = totalPct + '%';
 
-            // 更新 conic-gradient 進度環
+            // 進度環顏色漸變
             document.getElementById('overallGauge').style.background = 
                 `conic-gradient(var(--accent-blue) 0% ${totalPct}%, #e2e8f0 ${totalPct}% 100%)`;
 
-            // 計算內部與外部細部完成率
+            // 內/外部團隊任務完成率計算
             let internalDone = 0, internalTotal = 0;
             let externalDone = 0, externalTotal = 0;
 
@@ -824,7 +842,7 @@
             document.getElementById('internalAvgPct').innerText = intPct + '%';
             document.getElementById('externalAvgPct').innerText = extPct + '%';
 
-            // 一頁式平舖渲染月份卡片
+            // 渲染一頁式月份卡片
             const container = document.getElementById('monthsContainer');
             container.innerHTML = '';
 
@@ -904,10 +922,15 @@
             });
         }
 
+        function saveLocalProgress() {
+            localStorage.setItem('esg_dashboard_progress_data', JSON.stringify(currentData));
+        }
+
         function setCurrentPhase(targetIdx) {
             currentData.forEach((item, idx) => {
                 item.isCurrent = (idx === targetIdx);
             });
+            saveLocalProgress();
             renderDashboard(currentData);
         }
 
@@ -934,6 +957,7 @@
                 item.statusText = '未啟動 0%';
             }
 
+            saveLocalProgress();
             renderDashboard(currentData);
         }
 
@@ -952,6 +976,7 @@
                     alert('⚠️ 您貼上的網址好像不是 CSV 發布網址喔！\n請至 Google 試算表選擇「檔案 ➔ 分享 ➔ 發布到網路」，並將格式選擇為 CSV 複製產生的網址。');
                 }
                 localStorage.setItem('esg_sheet_csv_url', url);
+                document.getElementById('configBtn').classList.add('active-sync');
                 fetchGoogleSheetData(url);
             }
             closeConfigModal();
@@ -959,7 +984,9 @@
 
         function clearSheetUrl() {
             localStorage.removeItem('esg_sheet_csv_url');
+            localStorage.removeItem('esg_dashboard_progress_data');
             document.getElementById('sheetUrlInput').value = '';
+            document.getElementById('configBtn').classList.remove('active-sync');
             currentData = JSON.parse(JSON.stringify(defaultData));
             renderDashboard(currentData);
             closeConfigModal();
@@ -975,7 +1002,6 @@
         }
 
         function fetchGoogleSheetData(url) {
-            // 加入時間戳記 (Cache Buster)
             const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
 
             fetch(cacheBusterUrl)
@@ -988,7 +1014,7 @@
                     renderDashboard(currentData);
                 })
                 .catch(err => {
-                    console.warn("連動失敗，套用本地預設資料:", err);
+                    console.warn("試算表連動讀取失敗，套用備份資料:", err);
                     renderDashboard(currentData);
                 });
         }
