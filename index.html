@@ -8,6 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>臺灣企業永續 ESG 白皮書 - 動態管考與進度儀表板</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -691,8 +692,8 @@
     </div>
 
     <script>
-        // 🔑 請將您的 Google 試算表發布 CSV 網址填入下方單引號內（所有人點開即可自動連動）
-        const DEFAULT_SHEET_CSV_URL = '';
+        // 🔑 全域預設連動網址（發布試算表後可將產生的 CSV 網址填入單引號內）
+        const DEFAULT_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBJ_9G6SC5NbqVILFD_RM8hFSal8qGL18Bi6WIvjrG2JZVvRUaaiKaDIBkTirQagF9Cye0Y_2QlPW_/pub?gid=0&single=true&output=csv';
 
         // 預設完整 ESG 白皮書專案資料
         const defaultData = [
@@ -800,23 +801,54 @@
 
         let currentData = JSON.parse(JSON.stringify(defaultData));
 
-        function init() {
-            const activeUrl = localStorage.getItem('esg_sheet_csv_url') || DEFAULT_SHEET_CSV_URL;
+        function isValidHttpUrl(string) {
+            let url;
+            try {
+                url = new URL(string);
+            } catch (_) {
+                return false;  
+            }
+            return url.protocol === "http:" || url.protocol === "https:";
+        }
 
-            if (activeUrl && activeUrl.trim() !== '') {
-                document.getElementById('sheetUrlInput').value = activeUrl;
-                document.getElementById('configBtn').classList.add('active-sync');
-                fetchGoogleSheetData(activeUrl);
-            } else {
-                const localProgress = localStorage.getItem('esg_dashboard_progress_data');
-                if (localProgress) {
-                    try { currentData = JSON.parse(localProgress); } catch(e) {}
+        function init() {
+            try {
+                let savedUrl = localStorage.getItem('esg_sheet_csv_url');
+                let activeUrl = (savedUrl && savedUrl.trim() !== '') ? savedUrl.trim() : DEFAULT_SHEET_CSV_URL.trim();
+
+                if (activeUrl && isValidHttpUrl(activeUrl) && !activeUrl.includes('...')) {
+                    const inputElem = document.getElementById('sheetUrlInput');
+                    if (inputElem) inputElem.value = activeUrl;
+                    
+                    const btnElem = document.getElementById('configBtn');
+                    if (btnElem) btnElem.classList.add('active-sync');
+                    
+                    fetchGoogleSheetData(activeUrl);
+                } else {
+                    const localProgress = localStorage.getItem('esg_dashboard_progress_data');
+                    if (localProgress) {
+                        try { 
+                            const parsed = JSON.parse(localProgress); 
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                currentData = parsed;
+                            }
+                        } catch(e) {
+                            localStorage.removeItem('esg_dashboard_progress_data');
+                        }
+                    }
+                    renderDashboard(currentData);
                 }
+            } catch (err) {
+                console.warn("初始化異常，載入預設資料:", err);
                 renderDashboard(currentData);
             }
         }
 
         function renderDashboard(data) {
+            if (!Array.isArray(data) || data.length === 0) {
+                data = JSON.parse(JSON.stringify(defaultData));
+            }
+
             const currentItem = data.find(m => m.isCurrent) || data[0];
             if (currentItem) {
                 const statusBanner = document.getElementById('statusBanner');
@@ -825,27 +857,35 @@
                 }
             }
 
-            let totalPct = Math.round(data.reduce((acc, curr) => acc + curr.overallPct, 0) / data.length);
-            document.getElementById('overallPct').innerText = totalPct + '%';
+            let totalPct = Math.round(data.reduce((acc, curr) => acc + (curr.overallPct || 0), 0) / data.length);
+            const overallPctElem = document.getElementById('overallPct');
+            if (overallPctElem) overallPctElem.innerText = totalPct + '%';
 
-            document.getElementById('overallGauge').style.background = 
-                `conic-gradient(var(--accent-blue) 0% ${totalPct}%, #e2e8f0 ${totalPct}% 100%)`;
+            const overallGaugeElem = document.getElementById('overallGauge');
+            if (overallGaugeElem) {
+                overallGaugeElem.style.background = 
+                    `conic-gradient(var(--accent-blue) 0% ${totalPct}%, #e2e8f0 ${totalPct}% 100%)`;
+            }
 
             let internalDone = 0, internalTotal = 0;
             let externalDone = 0, externalTotal = 0;
 
             data.forEach(m => {
-                m.internalTasks.forEach(t => { internalTotal++; if(t.done) internalDone++; });
-                m.externalTasks.forEach(t => { externalTotal++; if(t.done) externalDone++; });
+                (m.internalTasks || []).forEach(t => { internalTotal++; if(t.done) internalDone++; });
+                (m.externalTasks || []).forEach(t => { externalTotal++; if(t.done) externalDone++; });
             });
 
             let intPct = Math.round((internalDone / (internalTotal || 1)) * 100) || 0;
             let extPct = Math.round((externalDone / (externalTotal || 1)) * 100) || 0;
 
-            document.getElementById('internalAvgPct').innerText = intPct + '%';
-            document.getElementById('externalAvgPct').innerText = extPct + '%';
+            const internalAvgElem = document.getElementById('internalAvgPct');
+            if (internalAvgElem) internalAvgElem.innerText = intPct + '%';
+
+            const externalAvgElem = document.getElementById('externalAvgPct');
+            if (externalAvgElem) externalAvgElem.innerText = extPct + '%';
 
             const container = document.getElementById('monthsContainer');
+            if (!container) return;
             container.innerHTML = '';
 
             data.forEach((item, monthIdx) => {
@@ -854,20 +894,20 @@
 
                 const badgeClass = item.status === 'green' ? 'badge-green' : (item.status === 'yellow' ? 'badge-yellow' : 'badge-gray');
 
-                const intTaskDone = item.internalTasks.filter(t => t.done).length;
-                const extTaskDone = item.externalTasks.filter(t => t.done).length;
+                const intTaskDone = (item.internalTasks || []).filter(t => t.done).length;
+                const extTaskDone = (item.externalTasks || []).filter(t => t.done).length;
 
-                const intPctMonth = Math.round((intTaskDone / (item.internalTasks.length || 1)) * 100);
-                const extPctMonth = Math.round((extTaskDone / (item.externalTasks.length || 1)) * 100);
+                const intPctMonth = Math.round((intTaskDone / ((item.internalTasks && item.internalTasks.length) || 1)) * 100);
+                const extPctMonth = Math.round((extTaskDone / ((item.externalTasks && item.externalTasks.length) || 1)) * 100);
 
-                const internalTasksHTML = item.internalTasks.map((t, taskIdx) => `
+                const internalTasksHTML = (item.internalTasks || []).map((t, taskIdx) => `
                     <li class="task-item" onclick="toggleTask(${monthIdx}, 'internal', ${taskIdx})">
                         <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${monthIdx}, 'internal', ${taskIdx})">
                         <span>${t.text}</span>
                     </li>
                 `).join('');
 
-                const externalTasksHTML = item.externalTasks.map((t, taskIdx) => `
+                const externalTasksHTML = (item.externalTasks || []).map((t, taskIdx) => `
                     <li class="task-item" onclick="toggleTask(${monthIdx}, 'external', ${taskIdx})">
                         <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${monthIdx}, 'external', ${taskIdx})">
                         <span>${t.text}</span>
@@ -889,7 +929,7 @@
                     </div>
 
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: ${item.overallPct}%;"></div>
+                        <div class="progress-bar-fill" style="width: ${item.overallPct || 0}%;"></div>
                     </div>
 
                     <div class="tracks-container">
@@ -915,7 +955,7 @@
                     </div>
 
                     <div class="month-card-footer">
-                        <span style="font-size: 12px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${item.internalTasks.length} ｜ 外部 ${extTaskDone}/${item.externalTasks.length}</span>
+                        <span style="font-size: 12px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${(item.internalTasks && item.internalTasks.length) || 0} ｜ 外部 ${extTaskDone}/${(item.externalTasks && item.externalTasks.length) || 0}</span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -923,7 +963,11 @@
         }
 
         function saveLocalProgress() {
-            localStorage.setItem('esg_dashboard_progress_data', JSON.stringify(currentData));
+            try {
+                localStorage.setItem('esg_dashboard_progress_data', JSON.stringify(currentData));
+            } catch (e) {
+                console.warn("無法寫入 LocalStorage:", e);
+            }
         }
 
         function setCurrentPhase(targetIdx) {
@@ -936,15 +980,17 @@
 
         function toggleTask(monthIdx, type, taskIdx) {
             const item = currentData[monthIdx];
-            if (type === 'internal') {
+            if (!item) return;
+
+            if (type === 'internal' && item.internalTasks[taskIdx]) {
                 item.internalTasks[taskIdx].done = !item.internalTasks[taskIdx].done;
-            } else {
+            } else if (type === 'external' && item.externalTasks[taskIdx]) {
                 item.externalTasks[taskIdx].done = !item.externalTasks[taskIdx].done;
             }
 
-            const allTasks = [...item.internalTasks, ...item.externalTasks];
+            const allTasks = [...(item.internalTasks || []), ...(item.externalTasks || [])];
             const doneCount = allTasks.filter(t => t.done).length;
-            item.overallPct = Math.round((doneCount / allTasks.length) * 100);
+            item.overallPct = allTasks.length > 0 ? Math.round((doneCount / allTasks.length) * 100) : 0;
 
             if (item.overallPct === 100) {
                 item.status = 'green';
@@ -962,22 +1008,27 @@
         }
 
         function openConfigModal() {
-            document.getElementById('configModal').classList.add('open');
+            const modal = document.getElementById('configModal');
+            if (modal) modal.classList.add('open');
         }
 
         function closeConfigModal(e) {
-            document.getElementById('configModal').classList.remove('open');
+            const modal = document.getElementById('configModal');
+            if (modal) modal.classList.remove('open');
         }
 
         function saveSheetUrl() {
-            const url = document.getElementById('sheetUrlInput').value.trim();
-            if (url) {
-                if (url.includes('/edit') && !url.includes('output=csv')) {
-                    alert('⚠️ 您貼上的網址好像不是 CSV 發布網址喔！\n請至 Google 試算表選擇「檔案 ➔ 分享 ➔ 發布到網路」，並將格式選擇為 CSV 複製產生的網址。');
-                }
+            const input = document.getElementById('sheetUrlInput');
+            if (!input) return;
+
+            const url = input.value.trim();
+            if (url && isValidHttpUrl(url)) {
                 localStorage.setItem('esg_sheet_csv_url', url);
-                document.getElementById('configBtn').classList.add('active-sync');
+                const btn = document.getElementById('configBtn');
+                if (btn) btn.classList.add('active-sync');
                 fetchGoogleSheetData(url);
+            } else {
+                alert('⚠️ 請輸入有效的 Google 試算表 CSV 網址！');
             }
             closeConfigModal();
         }
@@ -985,16 +1036,23 @@
         function clearSheetUrl() {
             localStorage.removeItem('esg_sheet_csv_url');
             localStorage.removeItem('esg_dashboard_progress_data');
-            document.getElementById('sheetUrlInput').value = '';
-            document.getElementById('configBtn').classList.remove('active-sync');
+            
+            const input = document.getElementById('sheetUrlInput');
+            if (input) input.value = '';
+
+            const btn = document.getElementById('configBtn');
+            if (btn) btn.classList.remove('active-sync');
+
             currentData = JSON.parse(JSON.stringify(defaultData));
             renderDashboard(currentData);
             closeConfigModal();
         }
 
         function refreshData() {
-            const activeUrl = localStorage.getItem('esg_sheet_csv_url') || DEFAULT_SHEET_CSV_URL;
-            if (activeUrl && activeUrl.trim() !== '') {
+            const savedUrl = localStorage.getItem('esg_sheet_csv_url');
+            const activeUrl = (savedUrl && savedUrl.trim() !== '') ? savedUrl.trim() : DEFAULT_SHEET_CSV_URL.trim();
+            
+            if (activeUrl && isValidHttpUrl(activeUrl) && !activeUrl.includes('...')) {
                 fetchGoogleSheetData(activeUrl);
             } else {
                 renderDashboard(currentData);
@@ -1002,11 +1060,16 @@
         }
 
         function fetchGoogleSheetData(url) {
-            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now() + '&_r=' + Math.random();
+            if (!isValidHttpUrl(url)) {
+                renderDashboard(currentData);
+                return;
+            }
+
+            const cacheBusterUrl = url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now();
 
             fetch(cacheBusterUrl)
                 .then(response => {
-                    if (!response.ok) throw new Error('網路或網址連結無效');
+                    if (!response.ok) throw new Error('網路回應異常');
                     return response.text();
                 })
                 .then(csvText => {
@@ -1015,12 +1078,13 @@
                     renderDashboard(currentData);
                 })
                 .catch(err => {
-                    console.warn("試算表連動讀取失敗，套用備份資料:", err);
+                    console.warn("連動失敗，採用預設備份資料:", err);
                     renderDashboard(currentData);
                 });
         }
 
         function parseCSVToData(csvText) {
+            if (!csvText || typeof csvText !== 'string') return;
             const lines = csvText.split(/\r\n|\n/);
             if (lines.length < 2) return;
 
@@ -1100,7 +1164,9 @@
             });
         }
 
-        init();
+        window.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
     </script>
 </body>
 </html>
