@@ -636,7 +636,7 @@
         <div class="header-brand">
             <i class="fa-solid fa-leaf"></i>
             <div class="header-title-text">
-                <h1>ESG 白皮書 動態管考</h1>
+                <h1>白皮書（臺灣企業永續ESG白皮書）時程總表</h1>
                 <p>115.08 - 116.01 一頁式實時看板</p>
             </div>
         </div>
@@ -660,7 +660,7 @@
             <span style="color: var(--text-muted);" id="lastSyncTime">115.08 當前階段</span>
         </div>
 
-        <!-- 專案總體進度 KPI 卡片 -->
+        <!-- 專案總體進度 KPI 卡片 (保留原樣不修改) -->
         <div class="kpi-card">
             <div class="card-header-title">
                 <span>專案總體進度</span>
@@ -681,11 +681,11 @@
                 <!-- 細部進度拆解 -->
                 <div class="sub-stats-column">
                     <div class="stat-box">
-                        <div class="stat-label">🔵 內部團隊進度</div>
+                        <div class="stat-label">🔵 內部團隊進度 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第二章、第三章、第五章)</span></div>
                         <div class="stat-val" id="internalAvgPct">50%</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">🟠 外部專家邀稿</div>
+                        <div class="stat-label">🟠 外部專家邀稿 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第一章、第四章)</span></div>
                         <div class="stat-val" id="externalAvgPct">0%</div>
                     </div>
                 </div>
@@ -699,7 +699,6 @@
 
         <div class="timeline-section-title">
             <h2>細部時程與任務平舖檢核</h2>
-            <span>一頁式直觀勾選</span>
         </div>
 
         <div class="month-cards-stack" id="monthsContainer">
@@ -942,7 +941,7 @@
                     <div class="tracks-container">
                         <div class="track-box">
                             <div class="track-header">
-                                <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部研究團隊任務</span>
+                                <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部團隊進度 <span style="font-size: 11px; font-weight: normal; opacity: 0.85;">(第二章、第三章、第五章)</span></span>
                                 <span class="status-badge badge-green" style="font-size: 11px;">${intPctMonth}%</span>
                             </div>
                             <ul class="task-list">
@@ -952,7 +951,7 @@
 
                         <div class="track-box">
                             <div class="track-header">
-                                <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家邀稿任務</span>
+                                <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家邀稿 <span style="font-size: 11px; font-weight: normal; opacity: 0.85;">(第一章、第四章)</span></span>
                                 <span class="status-badge badge-yellow" style="font-size: 11px;">${extPctMonth}%</span>
                             </div>
                             <ul class="task-list">
@@ -963,9 +962,6 @@
 
                     <div class="month-card-footer">
                         <span style="font-size: 12px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${item.internalTasks.length} ｜ 外部 ${extTaskDone}/${item.externalTasks.length}</span>
-                        <a href="https://drive.google.com" target="_blank" class="drive-link">
-                            <i class="fa-brands fa-google-drive"></i> 開啟雲端資料夾
-                        </a>
                     </div>
                 `;
                 container.appendChild(card);
