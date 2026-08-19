@@ -635,14 +635,6 @@
 
     <div class="container">
 
-        <!-- 連動狀態 -->
-        <div class="status-bar">
-            <span class="sync-tag" id="syncStatusTag">
-                <span class="pulse-dot"></span> <span id="syncText">已連動預設範例資料</span>
-            </span>
-            <span style="color: var(--text-muted);" id="lastSyncTime">115.08 當前階段</span>
-        </div>
-
         <!-- 專案總體進度 KPI 卡片 -->
         <div class="kpi-card">
             <div class="card-header-title">
@@ -843,7 +835,8 @@
             // 更新當前階段顯示於狀態列
             const currentItem = data.find(m => m.isCurrent) || data[0];
             if (currentItem) {
-                document.getElementById('lastSyncTime').innerText = `當前階段：${currentItem.month} ${currentItem.phase}`;
+                const lastSyncElem = document.getElementById('lastSyncTime');
+                if (lastSyncElem) lastSyncElem.innerText = `當前階段：${currentItem.month} ${currentItem.phase}`;
                 document.getElementById('statusBanner').innerHTML = `<i class="fa-solid fa-flag"></i> 📍 目前推進目標：${currentItem.month} ${currentItem.phase}`;
             }
 
@@ -999,7 +992,8 @@
                     alert('⚠️ 您貼上的網址好像不是 CSV 發布網址喔！\n請至 Google 試算表選擇「檔案 ➔ 分享 ➔ 發布到網路」，並將格式選擇為 CSV 複製產生的網址。');
                 }
                 localStorage.setItem('esg_sheet_csv_url', url);
-                document.getElementById('syncStatusTag').innerHTML = `<span class="pulse-dot"></span> 試算表連動中`;
+                const syncTag = document.getElementById('syncStatusTag');
+                if (syncTag) syncTag.innerHTML = `<span class="pulse-dot"></span> 試算表連動中`;
                 fetchGoogleSheetData(url);
             }
             closeConfigModal();
@@ -1008,7 +1002,8 @@
         function clearSheetUrl() {
             localStorage.removeItem('esg_sheet_csv_url');
             document.getElementById('sheetUrlInput').value = '';
-            document.getElementById('syncStatusTag').innerHTML = `<span class="pulse-dot"></span> 已連動預設範例資料`;
+            const syncTag = document.getElementById('syncStatusTag');
+            if (syncTag) syncTag.innerHTML = `<span class="pulse-dot"></span> 已連動預設範例資料`;
             currentData = JSON.parse(JSON.stringify(defaultData));
             renderDashboard(currentData);
             closeConfigModal();
@@ -1034,13 +1029,16 @@
                 })
                 .then(csvText => {
                     parseCSVToData(csvText);
-                    document.getElementById('syncText').innerText = 'Google 試算表即時連動中';
-                    document.getElementById('lastSyncTime').innerText = `最後同步：${new Date().toLocaleTimeString('zh-TW', {hour: '2-digit', minute:'2-digit'})}`;
+                    const syncText = document.getElementById('syncText');
+                    if (syncText) syncText.innerText = 'Google 試算表即時連動中';
+                    const lastSyncTime = document.getElementById('lastSyncTime');
+                    if (lastSyncTime) lastSyncTime.innerText = `最後同步：${new Date().toLocaleTimeString('zh-TW', {hour: '2-digit', minute:'2-digit'})}`;
                     renderDashboard(currentData);
                 })
                 .catch(err => {
                     console.warn("連動失敗，套用本地預設資料:", err);
-                    document.getElementById('syncText').innerText = '網址連動異常';
+                    const syncText = document.getElementById('syncText');
+                    if (syncText) syncText.innerText = '網址連動異常';
                     renderDashboard(currentData);
                 });
         }
