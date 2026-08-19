@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>臺灣企業永續 ESG 白皮書 - 動態管考與進度儀表板 (一頁式整合版)</title>
-    <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1023,12 +1022,15 @@
             const lines = csvText.split(/\r\n|\n/);
             if (lines.length < 2) return;
 
+            // 複製預設資料，建立解析暫存器
             const monthMap = {};
-            currentData.forEach(m => {
+            const baseData = JSON.parse(JSON.stringify(defaultData));
+            
+            baseData.forEach(m => {
                 monthMap[m.month] = {
                     ...m,
-                    internalTasks: [],
-                    externalTasks: []
+                    _parsedInternal: [],
+                    _parsedExternal: []
                 };
             });
 
@@ -1037,7 +1039,7 @@
                 if (!line) continue;
                 
                 const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                if (cols.length < 3) continue;
+                if (cols.length < 2) continue;
 
                 const monthKey = cols[0];
                 const intTask = cols[1];
@@ -1045,16 +1047,19 @@
                 const extTask = cols[3];
                 const extDone = cols[4];
 
-                const targetMonth = Object.keys(monthMap).find(k => monthKey.includes(k));
+                if (!monthKey) continue;
+
+                // 模糊匹配月份標籤 (如 115.10 或 115.10 研析期)
+                const targetMonth = Object.keys(monthMap).find(k => monthKey.includes(k) || k.includes(monthKey));
                 if (targetMonth) {
-                    if (intTask) {
-                        monthMap[targetMonth].internalTasks.push({
+                    if (intTask && intTask.trim() !== '') {
+                        monthMap[targetMonth]._parsedInternal.push({
                             text: intTask,
                             done: intDone === '是' || intDone === 'true' || intDone === 'TRUE' || intDone === '1'
                         });
                     }
-                    if (extTask) {
-                        monthMap[targetMonth].externalTasks.push({
+                    if (extTask && extTask.trim() !== '') {
+                        monthMap[targetMonth]._parsedExternal.push({
                             text: extTask,
                             done: extDone === '是' || extDone === 'true' || extDone === 'TRUE' || extDone === '1'
                         });
@@ -1063,11 +1068,19 @@
             }
 
             currentData = Object.values(monthMap).map(item => {
-                const allTasks = [...item.internalTasks, ...item.externalTasks];
-                if (allTasks.length === 0) return item;
+                // 防護機制：如果 CSV 有解析出任務則套用；若無則保留該月份原本的預設任務項目，不致變成空白
+                const internalTasks = item._parsedInternal.length > 0 ? item._parsedInternal : item.internalTasks;
+                const externalTasks = item._parsedExternal.length > 0 ? item._parsedExternal : item.externalTasks;
 
+                delete item._parsedInternal;
+                delete item._parsedExternal;
+
+                item.internalTasks = internalTasks;
+                item.externalTasks = externalTasks;
+
+                const allTasks = [...item.internalTasks, ...item.externalTasks];
                 const doneCount = allTasks.filter(t => t.done).length;
-                const pct = Math.round((doneCount / allTasks.length) * 100);
+                const pct = allTasks.length > 0 ? Math.round((doneCount / allTasks.length) * 100) : 0;
                 
                 let status = 'gray';
                 let statusText = '未啟動 0%';
