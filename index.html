@@ -687,6 +687,13 @@
     </div>
 
     <script>
+        // -------------------------------------------------------------
+        // 🔑 關鍵全域預設連動網址：
+        // 請將下方的 '請替換為您的Google試算表CSV網址' 換成您發布的 CSV 網址。
+        // 這樣所有用手機或電腦打開網頁的人，都會自動讀取同份試算表的最新進度！
+        // -------------------------------------------------------------
+        const DEFAULT_SHEET_CSV_URL = '';
+
         // 預設完整 ESG 白皮書專案資料
         const defaultData = [
             {
@@ -794,11 +801,13 @@
         let currentData = JSON.parse(JSON.stringify(defaultData));
 
         function init() {
-            const savedUrl = localStorage.getItem('esg_sheet_csv_url');
-            if (savedUrl) {
-                document.getElementById('sheetUrlInput').value = savedUrl;
+            // 優先讀取 LocalStorage 設定；若無則自動讀取程式碼內建的 DEFAULT_SHEET_CSV_URL
+            const activeUrl = localStorage.getItem('esg_sheet_csv_url') || DEFAULT_SHEET_CSV_URL;
+
+            if (activeUrl && activeUrl.trim() !== '') {
+                document.getElementById('sheetUrlInput').value = activeUrl;
                 document.getElementById('configBtn').classList.add('active-sync');
-                fetchGoogleSheetData(savedUrl);
+                fetchGoogleSheetData(activeUrl);
             } else {
                 const localProgress = localStorage.getItem('esg_dashboard_progress_data');
                 if (localProgress) {
@@ -992,9 +1001,9 @@
         }
 
         function refreshData() {
-            const savedUrl = localStorage.getItem('esg_sheet_csv_url');
-            if (savedUrl) {
-                fetchGoogleSheetData(savedUrl);
+            const activeUrl = localStorage.getItem('esg_sheet_csv_url') || DEFAULT_SHEET_CSV_URL;
+            if (activeUrl && activeUrl.trim() !== '') {
+                fetchGoogleSheetData(activeUrl);
             } else {
                 renderDashboard(currentData);
             }
@@ -1022,7 +1031,6 @@
             const lines = csvText.split(/\r\n|\n/);
             if (lines.length < 2) return;
 
-            // 複製預設資料，建立解析暫存器
             const monthMap = {};
             const baseData = JSON.parse(JSON.stringify(defaultData));
             
@@ -1049,7 +1057,6 @@
 
                 if (!monthKey) continue;
 
-                // 模糊匹配月份標籤 (如 115.10 或 115.10 研析期)
                 const targetMonth = Object.keys(monthMap).find(k => monthKey.includes(k) || k.includes(monthKey));
                 if (targetMonth) {
                     if (intTask && intTask.trim() !== '') {
@@ -1068,7 +1075,6 @@
             }
 
             currentData = Object.values(monthMap).map(item => {
-                // 防護機制：如果 CSV 有解析出任務則套用；若無則保留該月份原本的預設任務項目，不致變成空白
                 const internalTasks = item._parsedInternal.length > 0 ? item._parsedInternal : item.internalTasks;
                 const externalTasks = item._parsedExternal.length > 0 ? item._parsedExternal : item.externalTasks;
 
