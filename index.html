@@ -33,10 +33,10 @@
             --red: #ef4444;
             --red-bg: #fef2f2;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
-            --radius-lg: 18px;
-            --radius-md: 12px;
+            --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 8px 20px -4px rgba(15, 23, 42, 0.06);
+            --radius-lg: 14px;
+            --radius-md: 10px;
         }
 
         * {
@@ -51,40 +51,40 @@
             background-color: var(--bg-light);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 50px;
+            padding-bottom: 20px;
         }
 
         header {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.94);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 20px;
+            padding: 8px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-brand i {
-            font-size: 22px;
+            font-size: 18px;
             color: #059669;
             background: #d1fae5;
-            padding: 8px;
-            border-radius: 10px;
+            padding: 6px;
+            border-radius: 8px;
         }
 
         .header-title-text h1 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--primary);
             line-height: 1.2;
@@ -93,26 +93,25 @@
         .header-title-text p {
             font-size: 11px;
             color: var(--text-muted);
-            margin-top: 2px;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .icon-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
             position: relative;
@@ -132,73 +131,63 @@
         .icon-btn.active-sync::after {
             content: '';
             position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 8px;
-            height: 8px;
+            top: 3px;
+            right: 3px;
+            width: 7px;
+            height: 7px;
             background-color: var(--green);
             border-radius: 50%;
             border: 2px solid #ffffff;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 12px 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
 
+        /* 頂部 KPI 卡片：改為橫向扁平化 */
         .kpi-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 10px 18px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-sm);
         }
 
-        .card-header-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .kpi-main-grid {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .kpi-main-grid {
-            display: grid;
-            grid-template-columns: 130px 1fr;
-            gap: 16px;
-            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .gauge-wrapper {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
         }
 
         .gauge-circle {
-            width: 120px;
-            height: 120px;
+            width: 58px;
+            height: 58px;
             border-radius: 50%;
             background: conic-gradient(var(--accent-blue) 0% 0%, #e2e8f0 0% 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            flex-shrink: 0;
             transition: background 0.5s ease;
         }
 
         .gauge-inner {
-            width: 96px;
-            height: 96px;
+            width: 44px;
+            height: 44px;
             background: var(--card-bg);
             border-radius: 50%;
             display: flex;
@@ -208,7 +197,7 @@
         }
 
         .gauge-value {
-            font-size: 28px;
+            font-size: 14px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
@@ -216,96 +205,125 @@
         }
 
         .gauge-label {
-            font-size: 11px;
+            font-size: 9px;
             color: var(--text-muted);
-            margin-top: 2px;
         }
 
-        .sub-stats-column {
+        .kpi-title-block {
             display: flex;
             flex-direction: column;
+        }
+
+        .kpi-title-block .title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .sub-stats-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .stat-box-inline {
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .stat-box {
-            background: #f8fafc;
-            border-radius: var(--radius-md);
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-box .stat-label {
-            font-size: 12px;
+        .stat-box-inline .stat-label {
+            font-size: 11px;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .stat-box .stat-val {
-            font-size: 18px;
+        .stat-box-inline .stat-val {
+            font-size: 15px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
-            margin-top: 2px;
         }
 
-        .status-banner {
-            margin-top: 16px;
-            padding: 10px 14px;
+        .status-banner-compact {
+            padding: 6px 12px;
             border-radius: var(--radius-md);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            background: var(--yellow-bg);
+            color: var(--yellow-text);
+            border: 1px solid #fde68a;
         }
 
         .timeline-section-title {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin: 8px 0 0px 4px;
+            align-items: center;
+            margin: 2px 2px;
         }
 
         .timeline-section-title h2 {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--primary);
         }
 
-        .month-cards-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* 6 個月份卡片：電腦端 3 欄 × 2 列網格排列 */
+        .month-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .month-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .month-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         .month-card-item {
             background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 20px;
+            border-radius: var(--radius-md);
+            padding: 12px;
             border: 1.5px solid var(--border-color);
             box-shadow: var(--shadow-sm);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 10px;
             position: relative;
         }
 
         .month-card-item.is-current {
             border-color: var(--accent-blue);
-            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.12);
+            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.12);
         }
 
         .month-card-item.is-current::before {
             content: '當前階段';
             position: absolute;
             top: 0;
-            right: 20px;
+            right: 14px;
             background: var(--accent-blue);
             color: #fff;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 0 0 8px 8px;
+            padding: 2px 8px;
+            border-radius: 0 0 6px 6px;
         }
 
         .month-card-top {
@@ -317,26 +335,26 @@
         .month-info {
             display: flex;
             align-items: baseline;
-            gap: 8px;
+            gap: 6px;
         }
 
         .month-name {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
             color: var(--primary);
         }
 
         .month-phase {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
         }
 
         .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 700;
         }
 
@@ -345,10 +363,10 @@
         .badge-gray { background: #f1f5f9; color: #64748b; }
 
         .phase-set-btn {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 2px 8px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             background: #ffffff;
             color: var(--text-muted);
@@ -356,7 +374,7 @@
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         .phase-set-btn:active {
@@ -367,34 +385,34 @@
             background: var(--accent-blue);
             color: #ffffff;
             border-color: var(--accent-blue);
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
         }
 
         .progress-bar-bg {
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: #e2e8f0;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
             background: var(--accent-blue);
-            border-radius: 10px;
+            border-radius: 8px;
             transition: width 0.4s ease;
         }
 
         .tracks-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+            flex-grow: 1;
         }
 
         .track-box {
             background: #f8fafc;
-            border-radius: var(--radius-md);
-            padding: 14px;
+            border-radius: 8px;
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
         }
 
@@ -402,15 +420,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .track-title {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .track-title.internal { color: var(--primary-blue); }
@@ -420,19 +438,19 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .task-item {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 8px;
             background: #ffffff;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
-            font-size: 14px;
-            line-height: 1.4;
+            font-size: 12px;
+            line-height: 1.35;
             cursor: pointer;
             transition: background 0.15s ease;
         }
@@ -442,9 +460,9 @@
         }
 
         .task-item input[type="checkbox"] {
-            margin-top: 2px;
-            width: 20px;
-            height: 20px;
+            margin-top: 1px;
+            width: 16px;
+            height: 16px;
             accent-color: var(--accent-blue);
             flex-shrink: 0;
             cursor: pointer;
@@ -454,7 +472,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 4px;
+            padding-top: 2px;
             border-top: 1px dashed var(--border-color);
         }
 
@@ -477,7 +495,7 @@
             background: var(--card-bg);
             width: 100%;
             max-width: 600px;
-            border-radius: 24px 24px 0 0;
+            border-radius: 20px 20px 0 0;
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
@@ -495,12 +513,12 @@
             height: 4px;
             background: #cbd5e1;
             border-radius: 4px;
-            margin: 10px auto 4px;
+            margin: 8px auto 2px;
             flex-shrink: 0;
         }
 
         .sheet-header {
-            padding: 12px 20px 16px;
+            padding: 10px 16px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
@@ -508,13 +526,13 @@
         }
 
         .sheet-title h3 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--primary);
         }
 
         .sheet-title p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             margin-top: 2px;
         }
@@ -522,52 +540,52 @@
         .sheet-close-btn {
             background: #f1f5f9;
             border: none;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
         }
 
         .sheet-body {
-            padding: 16px 20px;
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .config-input {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
-            font-size: 14px;
-            margin-top: 6px;
+            font-size: 13px;
+            margin-top: 4px;
         }
 
         .sheet-footer {
-            padding: 12px 20px 20px;
+            padding: 10px 16px 16px;
             border-top: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             background: #ffffff;
         }
 
         .btn-full {
             width: 100%;
-            height: 44px;
-            border-radius: 12px;
-            font-size: 15px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             border: none;
             cursor: pointer;
             transition: all 0.2s;
@@ -582,12 +600,6 @@
             background: #ffffff;
             color: var(--accent-blue);
             border: 1px solid var(--border-color);
-        }
-
-        @media (min-width: 600px) {
-            .kpi-main-grid { grid-template-columns: 150px 1fr; }
-            .sub-stats-column { flex-direction: row; }
-            .stat-box { flex: 1; }
         }
     </style>
 </head>
@@ -613,15 +625,10 @@
 
     <div class="container">
 
-        <!-- 專案總體進度 KPI 卡片 -->
+        <!-- 專案總體進度 KPI 卡片 (橫向一頁列) -->
         <div class="kpi-card">
-            <div class="card-header-title">
-                <span>專案總體進度</span>
-                <i class="fa-solid fa-chart-pie" style="color: var(--accent-blue);"></i>
-            </div>
-            
             <div class="kpi-main-grid">
-                <!-- 完成率圓形圖 -->
+                <!-- 完成率圓形圖與標題 -->
                 <div class="gauge-wrapper">
                     <div class="gauge-circle" id="overallGauge">
                         <div class="gauge-inner">
@@ -629,33 +636,38 @@
                             <span class="gauge-label">完成率</span>
                         </div>
                     </div>
+                    <div class="kpi-title-block">
+                        <span class="title">專案總體進度</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">雙軌全流程管考</span>
+                    </div>
                 </div>
 
                 <!-- 細部進度拆解 -->
-                <div class="sub-stats-column">
-                    <div class="stat-box">
-                        <div class="stat-label">🔵 內部團隊進度 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第二章、第三章、第五章)</span></div>
-                        <div class="stat-val" id="internalAvgPct">0%</div>
+                <div class="sub-stats-row">
+                    <div class="stat-box-inline">
+                        <span class="stat-label">🔵 內部團隊 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第二、三、五章)</span></span>
+                        <span class="stat-val" id="internalAvgPct">0%</span>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-label">🟠 外部專家邀稿 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第一章、第四章)</span></div>
-                        <div class="stat-val" id="externalAvgPct">0%</div>
+                    <div class="stat-box-inline">
+                        <span class="stat-label">🟠 外部專家 <span style="font-size: 10px; font-weight: normal; color: var(--text-muted);">(第一、四章)</span></span>
+                        <span class="stat-val" id="externalAvgPct">0%</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- 專案狀態 Banner -->
-            <div class="status-banner" id="statusBanner" style="background: var(--yellow-bg); color: var(--yellow-text);">
-                <i class="fa-solid fa-flag"></i> 📍 目前推進目標：115.08 啟動期
+                <!-- 專案狀態 Banner -->
+                <div class="status-banner-compact" id="statusBanner">
+                    <i class="fa-solid fa-flag"></i> <span id="statusBannerText">📍 目前推進目標：115.08 啟動期</span>
+                </div>
             </div>
         </div>
 
         <div class="timeline-section-title">
             <h2>細部時程與任務檢核</h2>
+            <span style="font-size: 11px; color: var(--text-muted);">6 個里程碑一覽</span>
         </div>
 
-        <div class="month-cards-stack" id="monthsContainer">
-            <!-- 由 JavaScript 自動平舖渲染 6 個月份卡片與其內建任務 -->
+        <div class="month-cards-grid" id="monthsContainer">
+            <!-- 由 JavaScript 自動以 3 欄 x 2 列網格渲染 6 個月份卡片 -->
         </div>
 
     </div>
@@ -851,9 +863,9 @@
 
             const currentItem = data.find(m => m.isCurrent) || data[0];
             if (currentItem) {
-                const statusBanner = document.getElementById('statusBanner');
-                if (statusBanner) {
-                    statusBanner.innerHTML = `<i class="fa-solid fa-flag"></i> 📍 目前推進目標：${currentItem.month} ${currentItem.phase}`;
+                const statusBannerText = document.getElementById('statusBannerText');
+                if (statusBannerText) {
+                    statusBannerText.innerText = `📍 目前推進目標：${currentItem.month} ${currentItem.phase}`;
                 }
             }
 
@@ -920,9 +932,9 @@
                             <span class="month-name">${item.month}</span>
                             <span class="month-phase">${item.phase}</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
                             <button class="phase-set-btn ${item.isCurrent ? 'active' : ''}" onclick="setCurrentPhase(${monthIdx})" title="點擊設定此階段為當前重點目標">
-                                ${item.isCurrent ? '<i class="fa-solid fa-location-dot"></i> 當前階段' : '設為當前階段'}
+                                ${item.isCurrent ? '<i class="fa-solid fa-location-dot"></i> 當前' : '設為當前'}
                             </button>
                             <span class="status-badge ${badgeClass}">${item.statusText}</span>
                         </div>
@@ -935,8 +947,8 @@
                     <div class="tracks-container">
                         <div class="track-box">
                             <div class="track-header">
-                                <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部團隊進度 <span style="font-size: 11px; font-weight: normal; opacity: 0.85;">(第二章、第三章、第五章)</span></span>
-                                <span class="status-badge badge-green" style="font-size: 11px;">${intPctMonth}%</span>
+                                <span class="track-title internal"><i class="fa-solid fa-users"></i> 🔵 內部團隊 <span style="font-size: 10px; font-weight: normal; opacity: 0.85;">(第二、三、五章)</span></span>
+                                <span class="status-badge badge-green" style="font-size: 10px; padding: 1px 6px;">${intPctMonth}%</span>
                             </div>
                             <ul class="task-list">
                                 ${internalTasksHTML}
@@ -945,8 +957,8 @@
 
                         <div class="track-box">
                             <div class="track-header">
-                                <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家邀稿 <span style="font-size: 11px; font-weight: normal; opacity: 0.85;">(第一章、第四章)</span></span>
-                                <span class="status-badge badge-yellow" style="font-size: 11px;">${extPctMonth}%</span>
+                                <span class="track-title external"><i class="fa-solid fa-feather"></i> 🟠 外部專家 <span style="font-size: 10px; font-weight: normal; opacity: 0.85;">(第一、四章)</span></span>
+                                <span class="status-badge badge-yellow" style="font-size: 10px; padding: 1px 6px;">${extPctMonth}%</span>
                             </div>
                             <ul class="task-list">
                                 ${externalTasksHTML}
@@ -955,7 +967,7 @@
                     </div>
 
                     <div class="month-card-footer">
-                        <span style="font-size: 12px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${(item.internalTasks && item.internalTasks.length) || 0} ｜ 外部 ${extTaskDone}/${(item.externalTasks && item.externalTasks.length) || 0}</span>
+                        <span style="font-size: 11px; color: var(--text-muted);">進度：內部 ${intTaskDone}/${(item.internalTasks && item.internalTasks.length) || 0} ｜ 外部 ${extTaskDone}/${(item.externalTasks && item.externalTasks.length) || 0}</span>
                     </div>
                 `;
                 container.appendChild(card);
